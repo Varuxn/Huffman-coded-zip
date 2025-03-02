@@ -18,8 +18,9 @@ class Huffman_tree
     public:
     vector<Tree_node> tre;//存储哈夫曼树的节点
     unordered_map<unsigned char,string> enc;//编码信息映射表
-    // unordered_map<string,unsigned char> dec;//解码信息映射表
     int root,wpl;
+
+    //arr存储一个二元组数组表示频度表，每个元素表示(频度，字符)
     void build(vector<pair<int,unsigned char> > arr)//构建哈夫曼树
     {
         // priority_queue<pair<pair<int,unsigned char>,int> ,vector<pair<pair<int,unsigned char>,int> >,greater<> > q;
@@ -38,11 +39,11 @@ class Huffman_tree
             }
             pair<pair<int,unsigned char>,int> y=q.top(); q.pop();
             Tree_node it={x.second,y.second,x.first.first+y.first.first,max(x.first.second,y.first.second)};
-            // cout<<(int)x.first.second<<' '<<(int)y.first.second<<' '<<(int)max(x.first.second,y.first.second)<<endl;
             tre.push_back(it);
             q.push({{it.dat,it.ch},(int)tre.size()-1});
         }
     }
+
     int get_wpl()//求wpl
     {
         wpl=0;
@@ -51,24 +52,27 @@ class Huffman_tree
                 wpl+=it.dat;
         return wpl;
     }
+
+    //x表示递归的节编号，str记录当前节点到根结点的编码串
     void dfs(int x,string str)//递归求每个字符的编码
     {
         if(tre[x].l==-1 && tre[x].r==-1)
         {
             enc.insert({tre[x].ch,str});
-            // dec.insert({str,tre[x].ch});
             return ;
         }
-        // cout<<tre[x].l<<' '<<tre[x].r<<endl;
         dfs(tre[x].l,str+"0");
         dfs(tre[x].r,str+"1");
     }
+    
+    //arr存储一个二元组数组表示频度表，每个元素表示(频度，字符)
     void print_arr(vector<pair<int,unsigned char> > arr)//输出频率表
     {
         printf("\n************频率表**********\nbyte freq\n");
         for(auto it:arr)
             cout<<num_to_16(it.second)<<' '<<it.first<<endl;
     }
+    //s为.txt文本中读取的文本串
     void init(string s)//初始化哈夫曼树
     {
         unordered_map<unsigned char,int> mp;
@@ -77,8 +81,6 @@ class Huffman_tree
             if(mp.find(it) == mp.end())
                 mp.insert({it,1});
             else mp[it]++;
-            // if(it=='\n') cout<<"Test"<<endl;
-            // cout<<it;
         }
         vector<pair<int,unsigned char> > arr;
         for(auto it:mp)
@@ -87,21 +89,8 @@ class Huffman_tree
         build(arr);
         wpl=get_wpl();
         dfs(root,"");
-        // for(auto it:enc)
-        // {
-        //     bool flag=false;
-        //     for(auto ch:it.second)
-        //         if(ch=='1')
-        //             flag=true;
-        //     if(!flag)
-        //     {
-        //         enc[it.first]="0";
-        //         continue;
-        //     }
-        //     while(enc[it.first][0]=='0') enc[it.first]=enc[it.first].substr(1,enc[it.first].size());
-        //     // cout<<it.second<<endl;
-        // }
     }
+    //s为.txt文本中读取的文本串，返回编码后的串
     string encode(string s) // 编码
     {
         init(s);
@@ -122,31 +111,16 @@ class Huffman_tree
             }
             ans.push_back(byte);
         }
-        // cout<<s.size()<<' '<<binaryString.size()<<' '<<ans.size()<<endl;
         return ans;
     }
     vector<pair<unsigned char,string> > get_table()//得到编码表
     {
         vector<pair<unsigned char,string> > ans;
         for(auto it:enc)
-        {
             ans.push_back({it.first,it.second});
-            // cout<<it.second<<endl;
-        }
         sort(ans.begin(),ans.end());
-        // for(auto it:ans)
-        //     cout<<it.first<<' '<<(int)it.first<<' '<<it.second<<endl;
         return ans;
     }
-    // int decode(string x) // 解码
-    // {
-    //     if(dec.find(x)==dec.end())
-    //     {
-    //         printf("Decode Error: Not exist\n");
-    //         return -1;
-    //     }
-    //     return dec.find(x)->second;
-    // }
 };
 
 #endif

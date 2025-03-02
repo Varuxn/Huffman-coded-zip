@@ -3,6 +3,7 @@
 
 #include<bits/stdc++.h>
 using namespace std;
+//s为16进制下数字的字符串 如38(16)->56(10)
 inline int getnum(string s)//将16进制的string转化为int
 {
     int ans=0;
@@ -29,6 +30,7 @@ struct Trie//字典树
     int root=0,now=0,siz;
     vector<Node> tre;
     vector<pair<string,unsigned char> > mp;
+    //code_txt为code.txt的文件名/路径
     void get_code_map(string code_txt)//创建映射表
     {
         std::ifstream fin(code_txt.c_str());
@@ -60,6 +62,7 @@ struct Trie//字典树
 
         fin.close();
     }
+    //s和ch分别表示一个字符的编码01串和对应字符
     void insert(string s,unsigned char ch)//向字典树中加入字符串
     {
         int pos=root;
@@ -75,6 +78,7 @@ struct Trie//字典树
         }
         tre[pos].ch=ch;
     }
+    //code_txt为code.txt的文件名/路径
     void init(string code_txt)//根据映射表建立字典树
     {
         get_code_map(code_txt);
@@ -82,9 +86,10 @@ struct Trie//字典树
         for(auto it:mp)
             insert(it.first,it.second);
     }
+    //pos表示当前遍历到01串位置的值 0/1
+    //返回的二元组,first表示是否得到字符，first=true时，second表示对应字符
     pair<bool,unsigned char> find(int pos)//查询
     {
-        // cout<<pos<<endl;
         if(tre[now].son[pos] == -1)
         {
             printf("Error : The node does not exist in the Trie tree\n");
@@ -102,6 +107,8 @@ struct Trie//字典树
 class HFM_decoder
 {
     public:
+    //hfm_file表示.hfm文件的名称/路径，code_txt表示code.txt文件的名称/路径
+    //函数返回解码后的文本串
     string decode(string hfm_file,string code_txt)//解码
     {
         Trie T; T.init(code_txt);//预处理code.txt

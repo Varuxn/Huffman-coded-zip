@@ -3,6 +3,7 @@
 
 #include<bits/stdc++.h>
 using namespace std;
+//name表示文件名/路径
 string file_read(string name)//读入文件并且以string返回
 {
     FILE* file = fopen(name.c_str(), "r");
@@ -24,11 +25,11 @@ string file_read(string name)//读入文件并且以string返回
     fclose(file);
     return content;
 }
+//name表示文件名/路径，content表示写入文件的内容
 void file_write(string name,string content)
 {
     // 打开文件（写入模式，若文件不存在则创建文件）
     FILE* file = fopen(name.c_str(), "w");
-    // cout<<name<<' '<<content.size()<<endl;
     // 检查文件是否成功打开
     if (file == nullptr) {
         cerr << "Error: can't open this file to write" << endl;
@@ -41,6 +42,7 @@ void file_write(string name,string content)
     // 关闭文件
     fclose(file);
 }
+//name表示文件名/路径，返回文件的大小
 int file_size(string name)//查看某一个文件的大小
 {
     ifstream file(name, std::ios::binary); // 以二进制模式打开文件
